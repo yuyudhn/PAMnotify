@@ -20,13 +20,13 @@ _addr=$(hostname -I | awk '{print $1}')
 
 # Login Notification
 if [ "$PAM_TYPE" = "open_session" ]; then
-    message=$(printf "User *$PAM_USER* logged in from $_host ($_addr).\nMore details:\n*Time*: $_date\n*IP*: $PAM_RHOST\n*Service*: $PAM_SERVICE\n*tty*: $PAM_TTY")
+    message=$(printf "User *%s* logged in from %s (%s).\nMore details:\n*Time*: %s\n*IP*: %s\n*Service*: %s\n*tty*: %s" "$PAM_USER" "$_host" "$_addr" "$_date" "$PAM_RHOST" "$PAM_SERVICE" "$PAM_TTY")
     telegram_push "$message"
 fi
 
 # Logout Notification
 if [ "$PAM_TYPE" = "close_session" ]; then
-        message=$(printf "User *$PAM_USER* logged out from $_host ($_addr).\nMore details:\n*Time*: $_date\n*IP*: $PAM_RHOST\n*Service*: $PAM_SERVICE\n*tty*: $PAM_TTY")
+    message=$(printf "User *%s* logged out from %s (%s).\nMore details:\n*Time*: %s\n*IP*: %s\n*Service*: %s\n*tty*: %s" "$PAM_USER" "$_host" "$_addr" "$_date" "$PAM_RHOST" "$PAM_SERVICE" "$PAM_TTY")
     telegram_push "$message"
 fi
 
