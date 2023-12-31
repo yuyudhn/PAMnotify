@@ -1,8 +1,8 @@
 #!/bin/bash
+# Telgram notifier @yuyudhn
 
-# Telegram API Token and Group ID
-TELEGRAM_API_TOKEN="<your token>"
-TELEGRAM_GROUP_ID="<your group ID>"
+TELEGRAM_API_TOKEN=""
+TELEGRAM_GROUP_ID=""
 
 telegram_push() {
     curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_API_TOKEN/sendMessage" \
@@ -14,19 +14,19 @@ telegram_push() {
 }
 
 # Variable
-_date=$(TZ="Asia/Jakarta" date +"%d/%m/%Y %T")
-_host=$(hostname -f)
-_addr=$(hostname -I | awk '{print $1}')
+var_date=$(TZ="Asia/Jakarta" date +"%d/%m/%Y %T")
+var_host=$(hostname -f)
+var_addr=$(hostname -I | awk '{print $1}')
 
 # Login Notification
 if [ "$PAM_TYPE" = "open_session" ]; then
-    message=$(printf "User *%s* logged in from %s (%s).\nMore details:\n*Time*: %s\n*IP*: %s\n*Service*: %s\n*tty*: %s" "$PAM_USER" "$_host" "$_addr" "$_date" "$PAM_RHOST" "$PAM_SERVICE" "$PAM_TTY")
+    message=$(printf "*%s* logged in to %s (%s).\nMore details:\n*Time*: %s\n*IP*: %s\n*Service*: %s\n*tty*: %s\nRequester: %s" "$PAM_USER" "$var_host" "$var_addr" "$var_date" "$PAM_RHOST" "$PAM_SERVICE" "$PAM_TTY" "$PAM_RUSER")
     telegram_push "$message"
 fi
 
 # Logout Notification
 if [ "$PAM_TYPE" = "close_session" ]; then
-    message=$(printf "User *%s* logged out from %s (%s).\nMore details:\n*Time*: %s\n*IP*: %s\n*Service*: %s\n*tty*: %s" "$PAM_USER" "$_host" "$_addr" "$_date" "$PAM_RHOST" "$PAM_SERVICE" "$PAM_TTY")
+    message=$(printf "*%s* logged out from %s (%s).\nMore details:\n*Time*: %s\n*IP*: %s\n*Service*: %s\n*tty*: %s\nRequester: %s" "$PAM_USER" "$var_host" "$var_addr" "$var_date" "$PAM_RHOST" "$PAM_SERVICE" "$PAM_TTY" "$PAM_RUSER")
     telegram_push "$message"
 fi
 
